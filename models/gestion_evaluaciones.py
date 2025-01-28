@@ -1,6 +1,5 @@
 from odoo import models, fields, api
 
-
 class GestionEvaluaciones(models.Model):
     _name = "gestion.evaluaciones"
     _description = "Evaluación de empleado"
