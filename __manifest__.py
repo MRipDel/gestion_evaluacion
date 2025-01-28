@@ -2,17 +2,18 @@
     "name": "Gestión de Evaluaciones",
     "version": "1.0",
     "summary": "Módulo para gara gestionar las evaluaciones de desempeño de los empleados",
-    "category": "Productivity",
+    "category": "Human Resources",
     "author": "Manuel Ripalda",
     "website": "https://github.com/MRipDel",
     "license": "LGPL-3",
     "depends": ["base", "mail"],
-    "icon": "/gestion_tareas/static/description/icon52.png",
+    "icon": "/evaluacion_desempeno/static/description/icon52.png",
     "data": [
         "views/gestion_tarea_views.xml",
         "security/ir.model.access.csv"
     ],
     "application": True,
+    "depends":["base", "mail", "hr"],
     "installable": True,
     "auto_install": False,
     "description": """
@@ -20,7 +21,7 @@
     """,
  'assets': {
         "web.assets_backend": [
-            "/gestion_tareas/static/src/css/styles.css"
+            "/evaluacion_desempeno/static/src/css/styles.css"
         ],
     },
 }
