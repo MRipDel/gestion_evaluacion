@@ -3,10 +3,17 @@ from odoo import models, fields, api
 class GestionEvaluaciones(models.Model):
     _name = "gestion.evaluaciones"
     _description = "Evaluación de empleado"
-    title = fields.Char(string="Título", required=True)
-    evaluation_date = fields.Date(string="Fecha de evaluación", required=True)
-    comments = fields.Text(string="Comentarios de evaluador")
-    punctuation = fields.Float(string="Puntuación",required=True)
+    _inherit = ['mail.thread']
+    
+    title = fields.Char(string="Título", required=True, tracking=True)
+    evaluation_date = fields.Date(string="Fecha de evaluación", required=True, tracking=True)
+    comments = fields.Text(string="Comentarios de evaluador", tracking=True)
+    punctuation = fields.Integer(
+        string="Puntuación",
+        required=True,
+        tracking=True,
+        help="Puntuación del empleado (0-10)"
+    )
     state = fields.Selection(
         [
             ("draft", "Pendiente"),
@@ -15,10 +22,18 @@ class GestionEvaluaciones(models.Model):
         ],
         string="Estado",
         default="draft",
+        tracking=True,
     )
-    assigned_to = fields.Many2one("hr.employee", string="Empleado Asignado")
-    @api.one
+    assigned_to = fields.Many2one(
+        "hr.employee", 
+        string="Empleado Asignado",
+        required=True,
+        tracking=True,
+        ondelete='restrict'
+    )
+    
     @api.constrains('punctuation')
     def _check_punctuation(self):
-        if self.field_name > 10 or self.field_name < 0:
-            raise ValidationError(_('Introduce un valor de 0 a 10'))
+        for record in self:
+            if record.punctuation > 10 or record.punctuation < 0:
+                raise ValidationError(_('La puntuación debe estar entre 0 y 10'))
