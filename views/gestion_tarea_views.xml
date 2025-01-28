@@ -22,7 +22,7 @@
                             <field name="evaluation_date"/>
                         </group>
                         <group>
-                            <field name="punctuation" widget="float_time"/>
+                            <field name="punctuation"/>
                         </group>
                     </group>
                     <notebook>
@@ -31,6 +31,10 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -57,7 +61,7 @@
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <field name="punctuation" widget="float_time"/>
+                                        <field name="punctuation"/>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <field name="state" widget="label_selection" 
@@ -90,7 +94,8 @@
         <field name="name">gestion.evaluaciones.tree</field>
         <field name="model">gestion.evaluaciones</field>
         <field name="arch" type="xml">
-            <tree string="Evaluaciones" decoration-info="state == 'draft'" 
+            <tree string="Evaluaciones" 
+                  decoration-info="state == 'draft'" 
                   decoration-warning="state == 'in_progress'" 
                   decoration-success="state == 'done'">
                 <field name="title"/>
@@ -102,11 +107,40 @@
         </field>
     </record>
 
+    <!-- Vista de Búsqueda -->
+    <record id="view_gestion_evaluaciones_search" model="ir.ui.view">
+        <field name="name">gestion.evaluaciones.search</field>
+        <field name="model">gestion.evaluaciones</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Evaluaciones">
+                <field name="title"/>
+                <field name="assigned_to"/>
+                <field name="state"/>
+                <separator/>
+                <filter string="Mis Evaluaciones" name="my_evaluations" 
+                        domain="[('assigned_to.user_id', '=', uid)]"/>
+                <filter string="En Borrador" name="draft" 
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="En Progreso" name="in_progress" 
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Finalizadas" name="done" 
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Empleado" name="employee" context="{'group_by': 'assigned_to'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Fecha" name="date" context="{'group_by': 'evaluation_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Acción para abrir las vistas -->
     <record id="action_gestion_evaluaciones" model="ir.actions.act_window">
         <field name="name">Evaluaciones de Desempeño</field>
         <field name="res_model">gestion.evaluaciones</field>
         <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_gestion_evaluaciones_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Crea tu primera evaluación de desempeño
@@ -117,7 +151,7 @@
         </field>
     </record>
 
-    <!-- Menú -->
+    <!-- Menús -->
     <menuitem id="menu_gestion_evaluaciones_root"
               name="Evaluaciones"
               sequence="10"/>
