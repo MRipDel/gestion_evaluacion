@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de Formulario -->
+    <record id="view_gestion_evaluaciones_form" model="ir.ui.view">
+        <field name="name">gestion.evaluaciones.form</field>
+        <field name="model">gestion.evaluaciones</field>
+        <field name="arch" type="xml">
+            <form string="Evaluación">
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="title" placeholder="Título de la evaluación"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="assigned_to" options="{'no_create': True}"/>
+                            <field name="evaluation_date"/>
+                        </group>
+                        <group>
+                            <field name="punctuation" widget="float_time"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Comentarios">
+                            <field name="comments" placeholder="Añade tus comentarios sobre la evaluación..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_gestion_evaluaciones_kanban" model="ir.ui.view">
+        <field name="name">gestion.evaluaciones.kanban</field>
+        <field name="model">gestion.evaluaciones</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="title"/>
+                <field name="assigned_to"/>
+                <field name="evaluation_date"/>
+                <field name="punctuation"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill gestion_tarea_kanban">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="title"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="punctuation" widget="float_time"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection" 
+                                            options="{'classes': {
+                                                'draft': 'default',
+                                                'in_progress': 'info',
+                                                'done': 'success'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div>
+                                    <strong>Empleado: </strong>
+                                    <field name="assigned_to"/>
+                                </div>
+                                <div>
+                                    <strong>Fecha: </strong>
+                                    <field name="evaluation_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Lista -->
+    <record id="view_gestion_evaluaciones_tree" model="ir.ui.view">
+        <field name="name">gestion.evaluaciones.tree</field>
+        <field name="model">gestion.evaluaciones</field>
+        <field name="arch" type="xml">
+            <tree string="Evaluaciones" decoration-info="state == 'draft'" 
+                  decoration-warning="state == 'in_progress'" 
+                  decoration-success="state == 'done'">
+                <field name="title"/>
+                <field name="assigned_to"/>
+                <field name="evaluation_date"/>
+                <field name="punctuation"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción para abrir las vistas -->
+    <record id="action_gestion_evaluaciones" model="ir.actions.act_window">
+        <field name="name">Evaluaciones de Desempeño</field>
+        <field name="res_model">gestion.evaluaciones</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera evaluación de desempeño
+            </p>
+            <p>
+                Gestiona las evaluaciones de desempeño de tus empleados.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_gestion_evaluaciones_root"
+              name="Evaluaciones"
+              sequence="10"/>
+
+    <menuitem id="menu_gestion_evaluaciones_main"
+              name="Evaluaciones de Desempeño"
+              parent="menu_gestion_evaluaciones_root"
+              action="action_gestion_evaluaciones"
+              sequence="10"/>
+</odoo>
